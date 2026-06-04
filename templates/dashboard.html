@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Monitoramento IoT</title>
+
+<link rel="stylesheet"
+href="{{ url_for('static', filename='style.css') }}">
+
+<link rel="stylesheet"
+href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+</head>
+
+<body>
+
+<div class="sidebar">
+
+    <div class="logo">
+        MONITORA IOT
+    </div>
+
+    <ul>
+
+        <li id="nav-dashboard" class="nav-ativo" onclick="mostrarPagina('dashboard')">
+            <i class="fa-solid fa-chart-line"></i>
+            Dashboard
+        </li>
+
+        <li id="nav-historico" onclick="mostrarPagina('historico')">
+            <i class="fa-solid fa-clock-rotate-left"></i>
+            Histórico
+        </li>
+
+        <div class="card status-card">
+            <i id="icone-alerta" class="fa-solid fa-triangle-exclamation"></i>
+            <h3>Status</h3>
+            <span id="status-temp">---</span>
+        </div>
+
+        <div class="card" id="card-telegram" style="display:none; margin-top:15px;">
+            <i class="fa-brands fa-telegram" id="icone-telegram"></i>
+            <h3>Telegram</h3>
+            <span id="status-telegram">NOTIFICANDO</span>
+        </div>
+
+    </ul>
+
+</div>
+
+<div class="content">
+
+    <div class="header">
+        <h1 id="titulo-pagina">Monitoramento em Tempo Real</h1>
+        <div class="status">
+            <span class="online"></span>
+            ONLINE
+        </div>
+    </div>
+
+    <!-- ── PÁGINA DASHBOARD ── -->
+    <div id="pagina-dashboard">
+
+        <div class="cards">
+
+            <div class="card" id="card-temp">
+                <i class="fa-solid fa-temperature-three-quarters"></i>
+                <h3>Temperatura</h3>
+                <span id="temp">--°C</span>
+            </div>
+
+            <div class="card" id="card-umidade">
+                <i class="fa-solid fa-droplet"></i>
+                <h3>Umidade</h3>
+                <span id="umidade">--%</span>
+            </div>
+
+            <div class="card" id="card-vazamento">
+                <i class="fa-solid fa-water"></i>
+                <h3>Vazamento</h3>
+                <span id="vazamento">---</span>
+            </div>
+
+            <div class="card" id="card-horario">
+                <i class="fa-solid fa-clock"></i>
+                <h3>Última Atualização</h3>
+                <span id="horario">--:--:--</span>
+            </div>
+
+        </div>
+
+    </div>
+
+    <!-- ── PÁGINA HISTÓRICO ── -->
+    <div id="pagina-historico" style="display:none">
+
+        <div class="grafico-box">
+            <h2>Histórico de Temperatura</h2>
+            <canvas id="grafico"></canvas>
+        </div>
+
+    </div>
+
+</div>
+
+<script src="{{ url_for('static', filename='dashboard.js') }}"></script>
+
+</body>
+</html>

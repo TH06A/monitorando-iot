@@ -1,0 +1,303 @@
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+}
+
+body{
+    overflow-x:hidden;
+    background:#050a0f;
+    color:white;
+    font-family:Segoe UI;
+    display:flex;
+}
+
+/* ── SIDEBAR ──────────────────────────── */
+
+.sidebar{
+    width:260px;
+    height:100vh;
+    background:#080d12;
+    border-right:1px solid #00bfff;
+    padding:25px;
+    flex-shrink:0;
+}
+
+.logo{
+    color:#00bfff;
+    font-size:28px;
+    font-weight:bold;
+    margin-bottom:40px;
+}
+
+.sidebar ul{
+    list-style:none;
+}
+
+.sidebar li{
+    padding:15px;
+    margin-bottom:12px;
+    border-radius:10px;
+    transition:.3s;
+    cursor:pointer;
+    color:#aacfe0;
+}
+
+.sidebar li:hover{
+    background:rgba(0,191,255,0.15);
+    color:#00bfff;
+}
+
+.nav-ativo{
+    background:rgba(0,191,255,0.15);
+    color:#00bfff;
+    border-left:3px solid #00bfff;
+}
+
+/* ── CONTENT ──────────────────────────── */
+
+.content{
+    flex:1;
+    padding:25px;
+    min-width:0;
+}
+
+.header{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    margin-bottom:30px;
+    flex-wrap:wrap;
+    gap:10px;
+}
+
+.header h1{
+    font-size:clamp(16px, 2vw, 28px);
+    color:#e0f4ff;
+}
+
+.online{
+    width:12px;
+    height:12px;
+    border-radius:50%;
+    background:#00ff55;
+    display:inline-block;
+}
+
+/* ── CARDS ────────────────────────────── */
+
+.cards{
+    display:grid;
+    grid-template-columns:repeat(4, 1fr);
+    gap:20px;
+}
+
+.card{
+    background:#0d1520;
+    border:1px solid rgba(0,191,255,0.2);
+    border-radius:20px;
+    text-align:center;
+    padding:25px 15px;
+    box-shadow:0 0 20px rgba(0,191,255,0.08);
+}
+
+.card i{
+    color:#00bfff;
+    font-size:clamp(24px, 2.5vw, 40px);
+}
+
+.card h3{
+    font-size:clamp(12px, 1.2vw, 16px);
+    margin-top:8px;
+    color:#7ab8cc;
+}
+
+.card span{
+    display:block;
+    margin-top:10px;
+    color:#00bfff;
+    font-size:clamp(16px, 2.2vw, 38px);
+    font-weight:bold;
+    word-break:break-word;
+    line-height:1.2;
+}
+
+#status-temp{
+    font-size:clamp(14px, 1.5vw, 28px) !important;
+    display:block;
+    text-align:center;
+    margin-top:1rem;
+}
+
+/* ── GRÁFICO ──────────────────────────── */
+
+.grafico-box{
+    margin-top:25px;
+    background:#0d1520;
+    border-radius:20px;
+    padding:20px;
+    border:1px solid rgba(0,191,255,0.2);
+    box-shadow:0 0 20px rgba(0,191,255,0.08);
+}
+
+.grafico-box h2{
+    font-size:clamp(14px, 1.5vw, 22px);
+    margin-bottom:10px;
+    color:#e0f4ff;
+}
+
+/* ── ANIMAÇÕES ────────────────────────── */
+
+@keyframes piscar {
+    0%   { opacity:1; }
+    50%  { opacity:.2; }
+    100% { opacity:1; }
+}
+
+.alerta-piscando{
+    animation: piscar .8s infinite;
+}
+
+/* ── STATUS ───────────────────────────── */
+
+.status-ideal  { color:#00ff55; }
+.status-bom    { color:#00bfff; }
+
+.status-atencao{
+    color:#ffd700;
+    animation: piscar .8s infinite;
+}
+
+.status-laranja{
+    color:#ff8c00;
+    animation: piscar .8s infinite;
+}
+
+.status-critico{
+    color:#ff0000;
+    animation: piscar .8s infinite;
+}
+
+/* ── CARDS COLORIDOS ──────────────────── */
+
+.card-ideal{
+    border:2px solid #00ff55;
+    box-shadow:0 0 20px rgba(0,255,85,.4);
+}
+
+.card-bom{
+    border:2px solid #00bfff;
+    box-shadow:0 0 20px rgba(0,191,255,.4);
+}
+
+.card-alerta{
+    border:2px solid #ffd700;
+    box-shadow:0 0 20px rgba(255,215,0,.4);
+}
+
+.card-critico{
+    border:2px solid #ff0000;
+    box-shadow:0 0 20px rgba(255,0,0,.5);
+}
+
+.card-normal{
+    border:2px solid #00ff55;
+    box-shadow:0 0 20px rgba(0,255,85,.4);
+}
+
+.card-neutro{
+    border:2px solid #1a4a6a;
+    box-shadow:0 0 20px rgba(0,100,180,.2);
+}
+
+#card-telegram span{
+    font-size: clamp(12px, 1.2vw, 18px);
+    color: #ff4444;
+}
+
+#card-telegram i{
+    font-size: clamp(24px, 2vw, 36px);
+}
+
+/* ── NOTEBOOK 14" (~1366px) ───────────── */
+
+@media (max-width: 1400px) {
+
+    .sidebar{
+        width:200px;
+        padding:20px 15px;
+    }
+
+    .logo{
+        font-size:22px;
+        margin-bottom:25px;
+    }
+
+    .sidebar li{
+        padding:12px;
+        font-size:14px;
+    }
+
+    .cards{
+        grid-template-columns: repeat(2, 1fr);
+        gap:15px;
+    }
+
+    .card{
+        padding:20px 15px;
+    }
+
+    .content{
+        padding:20px;
+    }
+
+    .grafico-box{
+        margin-top:20px;
+    }
+}
+
+/* ── NOTEBOOK PEQUENO (~1024px) ───────── */
+
+@media (max-width: 1100px) {
+
+    .sidebar{
+        width:170px;
+        padding:15px 10px;
+    }
+
+    .logo{
+        font-size:18px;
+    }
+
+    .cards{
+        grid-template-columns: repeat(2, 1fr);
+        gap:12px;
+    }
+}
+
+/* ── PC GRANDE (1920px+) ──────────────── */
+
+@media (min-width: 1920px) {
+
+    .sidebar{
+        width:300px;
+        padding:35px;
+    }
+
+    .logo{
+        font-size:34px;
+    }
+
+    .cards{
+        grid-template-columns: repeat(4, 1fr);
+        gap:30px;
+    }
+
+    .card{
+        padding:40px 25px;
+    }
+
+    .content{
+        padding:35px;
+    }
+}
