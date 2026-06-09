@@ -408,5 +408,4 @@ setInterval(carregarDados, 5000);
     }
 }
 
-carregarDados();
-setInterval(carregarDados, 5000);
+
