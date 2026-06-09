@@ -140,6 +140,17 @@ body{
     box-shadow:0 0 20px rgba(0,191,255,0.08);
 }
 
+.graficos-grid{
+    display:grid;
+    grid-template-columns: 1fr 1fr;
+    gap:20px;
+    margin-top:25px;
+}
+
+.graficos-grid .grafico-box{
+    margin-top:0;
+}
+
 .grafico-box h2{
     font-size:clamp(14px, 1.5vw, 22px);
     margin-bottom:10px;
@@ -253,6 +264,10 @@ body{
 
     .grafico-box{
         margin-top:20px;
+    }
+
+    .graficos-grid{
+        grid-template-columns: 1fr 1fr;
     }
 }
 
