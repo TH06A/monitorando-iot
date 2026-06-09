@@ -124,11 +124,11 @@ def alertas():
     liquido     = r[1]
 
     problemas = []
-
+# ── RESTRIÇAO TEMP ──────────────────────────────────────
     if temperatura > 0:
-        if temperatura <= 4:
+        if temperatura <= 15:
             problemas.append(f"🌡️ Temperatura em <b>{temperatura}°C</b> (BOM, mas acima do ideal)")
-        elif temperatura <= 10:
+        elif temperatura <= 18:
             problemas.append(f"🌡️ Temperatura em <b>{temperatura}°C</b> (ATENÇÃO)")
         else:
             problemas.append(f"🌡️ Temperatura em <b>{temperatura}°C</b> (CRÍTICO)")
