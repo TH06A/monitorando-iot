@@ -14,26 +14,26 @@ function mostrarPagina(pagina) {
     } else {
         document.getElementById("pagina-historico").style.display = "block";
         document.getElementById("nav-historico").classList.add("nav-ativo");
-        document.getElementById("titulo-pagina").innerText = "Histórico de Temperatura";
+        document.getElementById("titulo-pagina").innerText = "Histórico";
         grafico.update("active");
+        graficoUmidade.update("active");
     }
 }
 
-// ── PLUGIN: Faixas coloridas de fundo ────────────────────────────
-const pluginFaixas = {
-    id: "faixas",
+// ── PLUGIN: Faixas temperatura ────────────────────────────────────
+const pluginFaixasTemp = {
+    id: "faixasTemp",
     beforeDraw(chart) {
         const { ctx, chartArea, scales } = chart;
         if (!chartArea) return;
-
         const yScale = scales.y;
         const { left, right } = chartArea;
 
         const faixas = [
-            { de: 2,   ate: 10,  cor: "rgba(255,0,0,0.12)" },
-            { de: -2,  ate: 2,   cor: "rgba(255,215,0,0.10)" },
-            { de: -5,  ate: -2,  cor: "rgba(0,191,255,0.10)" },
-            { de: -10, ate: -5,  cor: "rgba(0,255,85,0.08)" },
+            { de: 10,  ate: 40,  cor: "rgba(255,0,0,0.12)" },
+            { de: 4,   ate: 10,  cor: "rgba(255,215,0,0.10)" },
+            { de: 0,   ate: 4,   cor: "rgba(0,191,255,0.10)" },
+            { de: -10, ate: 0,   cor: "rgba(0,255,85,0.08)" },
         ];
 
         faixas.forEach(f => {
@@ -45,13 +45,11 @@ const pluginFaixas = {
             ctx.restore();
         });
 
-        const limites = [
-            { valor: 2,  cor: "rgba(255,0,0,0.5)" },
-            { valor: -2, cor: "rgba(255,215,0,0.5)" },
-            { valor: -5, cor: "rgba(0,255,85,0.5)" },
-        ];
-
-        limites.forEach(l => {
+        [
+            { valor: 10, cor: "rgba(255,0,0,0.5)" },
+            { valor: 4,  cor: "rgba(255,215,0,0.5)" },
+            { valor: 0,  cor: "rgba(0,255,85,0.5)" },
+        ].forEach(l => {
             const y = yScale.getPixelForValue(l.valor);
             ctx.save();
             ctx.strokeStyle = l.cor;
@@ -66,52 +64,70 @@ const pluginFaixas = {
     }
 };
 
-// ── GRADIENTE DA LINHA ────────────────────────────────────────────
-function criarGradiente(ctx, chartArea) {
+// ── PLUGIN: Faixas umidade ────────────────────────────────────────
+const pluginFaixasUmidade = {
+    id: "faixasUmidade",
+    beforeDraw(chart) {
+        const { ctx, chartArea, scales } = chart;
+        if (!chartArea) return;
+        const yScale = scales.y;
+        const { left, right } = chartArea;
+
+        const faixas = [
+            { de: 85,  ate: 100, cor: "rgba(255,0,0,0.12)" },
+            { de: 75,  ate: 85,  cor: "rgba(255,215,0,0.10)" },
+            { de: 0,   ate: 75,  cor: "rgba(0,255,85,0.08)" },
+        ];
+
+        faixas.forEach(f => {
+            const yTop    = yScale.getPixelForValue(f.ate);
+            const yBottom = yScale.getPixelForValue(f.de);
+            ctx.save();
+            ctx.fillStyle = f.cor;
+            ctx.fillRect(left, yTop, right - left, yBottom - yTop);
+            ctx.restore();
+        });
+
+        [
+            { valor: 85, cor: "rgba(255,0,0,0.5)" },
+            { valor: 75, cor: "rgba(255,215,0,0.5)" },
+        ].forEach(l => {
+            const y = yScale.getPixelForValue(l.valor);
+            ctx.save();
+            ctx.strokeStyle = l.cor;
+            ctx.lineWidth = 1;
+            ctx.setLineDash([6, 4]);
+            ctx.beginPath();
+            ctx.moveTo(left, y);
+            ctx.lineTo(right, y);
+            ctx.stroke();
+            ctx.restore();
+        });
+    }
+};
+
+// ── GRADIENTES ────────────────────────────────────────────────────
+function gradienteTemp(ctx, chartArea) {
     if (!chartArea) return "rgba(255,0,0,0.3)";
-    const gradient = ctx.createLinearGradient(0, chartArea.top, 0, chartArea.bottom);
-    gradient.addColorStop(0,   "rgba(255,0,0,0.5)");
-    gradient.addColorStop(0.5, "rgba(255,100,0,0.2)");
-    gradient.addColorStop(1,   "rgba(255,0,0,0.0)");
-    return gradient;
+    const g = ctx.createLinearGradient(0, chartArea.top, 0, chartArea.bottom);
+    g.addColorStop(0,   "rgba(255,0,0,0.5)");
+    g.addColorStop(0.5, "rgba(255,100,0,0.2)");
+    g.addColorStop(1,   "rgba(255,0,0,0.0)");
+    return g;
 }
 
-// ── GRÁFICO ───────────────────────────────────────────────────────
-const ctx = document.getElementById("grafico");
+function gradienteUmidade(ctx, chartArea) {
+    if (!chartArea) return "rgba(0,191,255,0.3)";
+    const g = ctx.createLinearGradient(0, chartArea.top, 0, chartArea.bottom);
+    g.addColorStop(0,   "rgba(0,191,255,0.5)");
+    g.addColorStop(0.5, "rgba(0,191,255,0.2)");
+    g.addColorStop(1,   "rgba(0,191,255,0.0)");
+    return g;
+}
 
-const grafico = new Chart(ctx, {
-    type: "line",
-    plugins: [pluginFaixas],
-    data: {
-        labels: [],
-        datasets: [{
-            label: "Temperatura (°C)",
-            data: [],
-            borderColor: "#ff4444",
-            borderWidth: 2.5,
-            backgroundColor: function(context) {
-                const chart = context.chart;
-                const { ctx, chartArea } = chart;
-                if (!chartArea) return "rgba(255,0,0,0.3)";
-                return criarGradiente(ctx, chartArea);
-            },
-            fill: true,
-            tension: 0.4,
-            pointRadius: 4,
-            pointHoverRadius: 7,
-            pointBackgroundColor: function(context) {
-                const val = context.parsed?.y;
-                if (val === undefined) return "#ff4444";
-                if (val <= -5) return "#00ff55";
-                if (val <= -2) return "#00bfff";
-                if (val <= 2)  return "#ffd700";
-                return "#ff0000";
-            },
-            pointBorderColor: "#111",
-            pointBorderWidth: 2,
-        }]
-    },
-    options: {
+// ── OPÇÕES COMPARTILHADAS ─────────────────────────────────────────
+function opcoesGrafico(sufixo, tooltipCallback) {
+    return {
         responsive: true,
         animation: { duration: 600, easing: "easeInOutQuart" },
         interaction: { mode: "index", intersect: false },
@@ -130,37 +146,106 @@ const grafico = new Chart(ctx, {
                 grid: { color: "rgba(255,255,255,0.05)" }
             },
             y: {
-                ticks: {
-                    color: "#aaa",
-                    callback: val => val + "°C"
-                },
+                ticks: { color: "#aaa", callback: val => val + sufixo },
                 grid: { color: "rgba(255,255,255,0.05)" }
             }
         },
         plugins: {
-            legend: {
-                labels: { color: "#ccc", font: { size: 13 } }
-            },
+            legend: { labels: { color: "#ccc", font: { size: 13 } } },
             tooltip: {
                 backgroundColor: "#0d1520",
                 borderColor: "#00bfff",
                 borderWidth: 1,
                 titleColor: "#fff",
                 bodyColor: "#ccc",
-                callbacks: {
-                    label: function(context) {
-                        const val = context.parsed.y;
-                        let status;
-                        if (val <= -5)      status = "✅ IDEAL";
-                        else if (val <= -2) status = "🔵 BOM";
-                        else if (val <= 2)  status = "⚠️ ATENÇÃO";
-                        else                status = "🔴 CRÍTICO";
-                        return ` ${val}°C — ${status}`;
-                    }
-                }
+                callbacks: { label: tooltipCallback }
             }
         }
-    }
+    };
+}
+
+// ── GRÁFICO TEMPERATURA ───────────────────────────────────────────
+const grafico = new Chart(document.getElementById("grafico"), {
+    type: "line",
+    plugins: [pluginFaixasTemp],
+    data: {
+        labels: [],
+        datasets: [{
+            label: "Temperatura (°C)",
+            data: [],
+            borderColor: "#ff4444",
+            borderWidth: 2.5,
+            backgroundColor: function(context) {
+                const { ctx, chartArea } = context.chart;
+                if (!chartArea) return "rgba(255,0,0,0.3)";
+                return gradienteTemp(ctx, chartArea);
+            },
+            fill: true,
+            tension: 0.4,
+            pointRadius: 4,
+            pointHoverRadius: 7,
+            pointBackgroundColor: function(context) {
+                const val = context.parsed?.y;
+                if (val === undefined) return "#ff4444";
+                if (val <= 0)  return "#00ff55";
+                if (val <= 4)  return "#00bfff";
+                if (val <= 10) return "#ffd700";
+                return "#ff0000";
+            },
+            pointBorderColor: "#111",
+            pointBorderWidth: 2,
+        }]
+    },
+    options: opcoesGrafico("°C", function(context) {
+        const val = context.parsed.y;
+        let status;
+        if (val <= 0)       status = "✅ IDEAL";
+        else if (val <= 4)  status = "🔵 BOM";
+        else if (val <= 10) status = "⚠️ ATENÇÃO";
+        else                status = "🔴 CRÍTICO";
+        return ` ${val}°C — ${status}`;
+    })
+});
+
+// ── GRÁFICO UMIDADE ───────────────────────────────────────────────
+const graficoUmidade = new Chart(document.getElementById("grafico-umidade"), {
+    type: "line",
+    plugins: [pluginFaixasUmidade],
+    data: {
+        labels: [],
+        datasets: [{
+            label: "Umidade (%)",
+            data: [],
+            borderColor: "#00bfff",
+            borderWidth: 2.5,
+            backgroundColor: function(context) {
+                const { ctx, chartArea } = context.chart;
+                if (!chartArea) return "rgba(0,191,255,0.3)";
+                return gradienteUmidade(ctx, chartArea);
+            },
+            fill: true,
+            tension: 0.4,
+            pointRadius: 4,
+            pointHoverRadius: 7,
+            pointBackgroundColor: function(context) {
+                const val = context.parsed?.y;
+                if (val === undefined) return "#00bfff";
+                if (val <= 75) return "#00ff55";
+                if (val <= 85) return "#ffd700";
+                return "#ff0000";
+            },
+            pointBorderColor: "#111",
+            pointBorderWidth: 2,
+        }]
+    },
+    options: opcoesGrafico("%", function(context) {
+        const val = context.parsed.y;
+        let status;
+        if (val <= 75)      status = "✅ IDEAL";
+        else if (val <= 85) status = "⚠️ ATENÇÃO";
+        else                status = "🔴 CRÍTICO";
+        return ` ${val}% — ${status}`;
+    })
 });
 
 // ── LÓGICA PRINCIPAL ──────────────────────────────────────────────
@@ -183,17 +268,39 @@ async function carregarDados(){
         const cardTemp = document.getElementById("card-temp");
         let problemaTemp = false;
 
-        if (temperatura <= -5) {
+        if (temperatura <= 0) {
             cardTemp.className = "card card-ideal";
-        } else if (temperatura <= -2) {
+        } else if (temperatura <= 4) {
             cardTemp.className = "card card-bom";
             problemaTemp = true;
-        } else if (temperatura <= 2) {
+        } else if (temperatura <= 10) {
             cardTemp.className = "card card-alerta";
             problemaTemp = true;
         } else {
             cardTemp.className = "card card-critico";
             problemaTemp = true;
+        }
+
+        // ── TENDÊNCIA DE TEMPERATURA ──────────────────
+        if (dados.length >= 3) {
+            const t0 = dados[0].temperatura;
+            const t1 = dados[1].temperatura;
+            const t2 = dados[2].temperatura;
+            const tendencia = document.getElementById("tendencia-temp");
+
+            if (t0 > t1 && t1 > t2) {
+                tendencia.innerText = "↑";
+                tendencia.style.color = "#ff4444";
+                tendencia.title = "Temperatura subindo";
+            } else if (t0 < t1 && t1 < t2) {
+                tendencia.innerText = "↓";
+                tendencia.style.color = "#00ff55";
+                tendencia.title = "Temperatura descendo";
+            } else {
+                tendencia.innerText = "→";
+                tendencia.style.color = "#aaa";
+                tendencia.title = "Temperatura estável";
+            }
         }
 
         // ── UMIDADE ───────────────────────────────────
@@ -218,12 +325,23 @@ async function carregarDados(){
         const cardVazamento = document.getElementById("card-vazamento");
         const problemaVazamento = ultimo.vazamento === 1;
 
+        // Busca último vazamento detectado
+        const ultimoVazamento = dados.find(d => d.vazamento === 1);
+
         if (problemaVazamento) {
             document.getElementById("vazamento").innerText = "DETECTADO";
             cardVazamento.className = "card card-critico";
         } else {
             document.getElementById("vazamento").innerText = "ESTÁVEL";
             cardVazamento.className = "card card-ideal";
+        }
+
+        const ultimoEvento = document.getElementById("ultimo-vazamento");
+        if (ultimoVazamento) {
+            const hora = ultimoVazamento.hora.match(/(\d{2}:\d{2})/);
+            ultimoEvento.innerText = "Último: " + (hora ? hora[1] : "--:--");
+        } else {
+            ultimoEvento.innerText = "Sem registros";
         }
 
         // ── HORÁRIO ───────────────────────────────────
@@ -245,35 +363,38 @@ async function carregarDados(){
         if (problemas === 0) {
             status.innerText = "ESTÁVEL";
             status.classList.add("status-ideal");
-
         } else if (problemas === 1) {
             status.innerText = "1 PROBLEMA";
             status.classList.add("status-atencao");
             alerta.classList.add("alerta-piscando");
-
         } else if (problemas === 2) {
             status.innerText = "2 PROBLEMAS";
             status.classList.add("status-laranja");
             alerta.classList.add("alerta-piscando");
-
         } else {
             status.innerText = "3 PROBLEMAS";
             status.classList.add("status-critico");
             alerta.classList.add("alerta-piscando");
         }
 
-        // ── GRÁFICO ───────────────────────────────────
+        // ── GRÁFICOS ──────────────────────────────────
         const labels = [];
         const temperaturas = [];
+        const umidades = [];
 
         [...dados].reverse().forEach(item => {
             labels.push(item.hora);
             temperaturas.push(item.temperatura);
+            umidades.push(item.umidade);
         });
 
         grafico.data.labels = labels;
         grafico.data.datasets[0].data = temperaturas;
         grafico.update("active");
+
+        graficoUmidade.data.labels = labels;
+        graficoUmidade.data.datasets[0].data = umidades;
+        graficoUmidade.update("active");
 
         // ── TELEGRAM ──────────────────────────────────
         const cardTelegram  = document.getElementById("card-telegram");
