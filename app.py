@@ -1,5 +1,5 @@
 from flask import Flask, render_template, jsonify, request
-import sqlite3
+import psycopg2
 import requests
 import os
 
@@ -14,6 +14,30 @@ DESTINATARIOS = [
 ]
 
 ultimo_nivel_notificado = 0
+
+# ── CONFIGURAÇÃO BANCO ────────────────────────────────────────────
+DATABASE_URL = "postgresql://monitora_iot_db_user:nXoVfnBKqp71U3NoIirT4Nckk4D6ha78@dpg-d8k9dfgu3fls73aa9km0-a/monitora_iot_db"
+
+def get_conn():
+    return psycopg2.connect(DATABASE_URL)
+
+def init_db():
+    conn = get_conn()
+    cursor = conn.cursor()
+    cursor.execute("""
+    CREATE TABLE IF NOT EXISTS sensores (
+        id SERIAL PRIMARY KEY,
+        temperatura REAL,
+        umidade REAL,
+        bateria INTEGER,
+        vazamento INTEGER,
+        data_hora TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    )
+    """)
+    conn.commit()
+    conn.close()
+
+init_db()
 
 def enviar_telegram(mensagem):
     url = f"https://api.telegram.org/bot{TELEGRAM_TOKEN}/sendMessage"
@@ -32,11 +56,11 @@ def receber_sensor():
     temperatura = dados["temperatura"]
     liquido     = dados["liquido"]
 
-    conn = sqlite3.connect("banco.db")
+    conn = get_conn()
     cursor = conn.cursor()
     cursor.execute("""
     INSERT INTO sensores (temperatura, umidade, bateria, vazamento)
-    VALUES (?, ?, ?, ?)
+    VALUES (%s, %s, %s, %s)
     """, (temperatura, liquido, 100, 1 if liquido > 30 else 0))
     conn.commit()
     conn.close()
@@ -51,28 +75,28 @@ def dashboard():
 # ── ROTA: BUSCAR DADOS ────────────────────────────────────────────
 @app.route("/dados")
 def dados():
-    conn = sqlite3.connect("banco.db")
-    conn.row_factory = sqlite3.Row
+    conn = get_conn()
     cursor = conn.cursor()
 
     cursor.execute("""
-    SELECT * FROM sensores
+    SELECT temperatura, umidade, vazamento, data_hora
+    FROM sensores
     ORDER BY id DESC
     LIMIT 20
     """)
 
     registros = cursor.fetchall()
-    resultado = []
+    conn.close()
 
+    resultado = []
     for r in registros:
         resultado.append({
-            "temperatura": r["temperatura"],
-            "liquido":     r["umidade"],
-            "vazamento":   r["vazamento"],
-            "hora":        r["data_hora"]
+            "temperatura": r[0],
+            "liquido":     r[1],
+            "vazamento":   r[2],
+            "hora":        str(r[3])
         })
 
-    conn.close()
     return jsonify(resultado)
 
 # ── ROTA: ALERTAS E TELEGRAM ──────────────────────────────────────
@@ -80,12 +104,12 @@ def dados():
 def alertas():
     global ultimo_nivel_notificado
 
-    conn = sqlite3.connect("banco.db")
-    conn.row_factory = sqlite3.Row
+    conn = get_conn()
     cursor = conn.cursor()
 
     cursor.execute("""
-    SELECT * FROM sensores
+    SELECT temperatura, umidade, vazamento
+    FROM sensores
     ORDER BY id DESC
     LIMIT 1
     """)
@@ -96,8 +120,8 @@ def alertas():
     if not r:
         return jsonify({"problemas": 0})
 
-    temperatura = r["temperatura"]
-    liquido     = r["umidade"]
+    temperatura = r[0]
+    liquido     = r[1]
 
     problemas = []
 
