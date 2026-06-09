@@ -73,6 +73,7 @@ href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
                 <i class="fa-solid fa-temperature-three-quarters"></i>
                 <h3>Temperatura</h3>
                 <span id="temp">--°C</span>
+                <small id="tendencia-temp" style="font-size:1.8rem; font-weight:bold;">→</small>
             </div>
 
             <div class="card" id="card-umidade">
@@ -85,6 +86,7 @@ href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
                 <i class="fa-solid fa-water"></i>
                 <h3>Vazamento</h3>
                 <span id="vazamento">---</span>
+                <small id="ultimo-vazamento" style="font-size:0.75rem; color:#aaa; display:block; margin-top:6px;">Sem registros</small>
             </div>
 
             <div class="card" id="card-horario">
@@ -100,9 +102,18 @@ href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
     <!-- ── PÁGINA HISTÓRICO ── -->
     <div id="pagina-historico" style="display:none">
 
-        <div class="grafico-box">
-            <h2>Histórico de Temperatura</h2>
-            <canvas id="grafico"></canvas>
+        <div class="graficos-grid">
+
+            <div class="grafico-box">
+                <h2>Histórico de Temperatura</h2>
+                <canvas id="grafico"></canvas>
+            </div>
+
+            <div class="grafico-box">
+                <h2>Histórico de Umidade</h2>
+                <canvas id="grafico-umidade"></canvas>
+            </div>
+
         </div>
 
     </div>
