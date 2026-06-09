@@ -405,7 +405,6 @@ async function carregarDados(){
 carregarDados();
 setInterval(carregarDados, 5000);
         console.log(erro);
-    }
-}
+
 
 
