@@ -52,7 +52,7 @@ def enviar_telegram(mensagem):
 @app.route("/sensor", methods=["POST"])
 def receber_sensor():
     dados = request.get_json()
-
+    print("Recebido:", dados, flush=True)
     temperatura = dados["temperatura"]
     liquido     = dados["liquido"]
 
