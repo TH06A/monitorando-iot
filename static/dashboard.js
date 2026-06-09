@@ -1,9 +1,7 @@
 // ── NAVEGAÇÃO ENTRE PÁGINAS ───────────────────────────────────────
 function mostrarPagina(pagina) {
-
     document.getElementById("pagina-dashboard").style.display = "none";
     document.getElementById("pagina-historico").style.display  = "none";
-
     document.getElementById("nav-dashboard").classList.remove("nav-ativo");
     document.getElementById("nav-historico").classList.remove("nav-ativo");
 
@@ -16,7 +14,7 @@ function mostrarPagina(pagina) {
         document.getElementById("nav-historico").classList.add("nav-ativo");
         document.getElementById("titulo-pagina").innerText = "Histórico";
         grafico.update("active");
-        graficoUmidade.update("active");
+        graficoLiquido.update("active");
     }
 }
 
@@ -64,9 +62,9 @@ const pluginFaixasTemp = {
     }
 };
 
-// ── PLUGIN: Faixas umidade ────────────────────────────────────────
-const pluginFaixasUmidade = {
-    id: "faixasUmidade",
+// ── PLUGIN: Faixas líquido ────────────────────────────────────────
+const pluginFaixasLiquido = {
+    id: "faixasLiquido",
     beforeDraw(chart) {
         const { ctx, chartArea, scales } = chart;
         if (!chartArea) return;
@@ -74,9 +72,8 @@ const pluginFaixasUmidade = {
         const { left, right } = chartArea;
 
         const faixas = [
-            { de: 85,  ate: 100, cor: "rgba(255,0,0,0.12)" },
-            { de: 75,  ate: 85,  cor: "rgba(255,215,0,0.10)" },
-            { de: 0,   ate: 75,  cor: "rgba(0,255,85,0.08)" },
+            { de: 30,  ate: 100, cor: "rgba(255,0,0,0.12)" },
+            { de: 0,   ate: 30,  cor: "rgba(0,255,85,0.08)" },
         ];
 
         faixas.forEach(f => {
@@ -88,21 +85,16 @@ const pluginFaixasUmidade = {
             ctx.restore();
         });
 
-        [
-            { valor: 85, cor: "rgba(255,0,0,0.5)" },
-            { valor: 75, cor: "rgba(255,215,0,0.5)" },
-        ].forEach(l => {
-            const y = yScale.getPixelForValue(l.valor);
-            ctx.save();
-            ctx.strokeStyle = l.cor;
-            ctx.lineWidth = 1;
-            ctx.setLineDash([6, 4]);
-            ctx.beginPath();
-            ctx.moveTo(left, y);
-            ctx.lineTo(right, y);
-            ctx.stroke();
-            ctx.restore();
-        });
+        const y = yScale.getPixelForValue(30);
+        ctx.save();
+        ctx.strokeStyle = "rgba(255,0,0,0.5)";
+        ctx.lineWidth = 1;
+        ctx.setLineDash([6, 4]);
+        ctx.beginPath();
+        ctx.moveTo(left, y);
+        ctx.lineTo(right, y);
+        ctx.stroke();
+        ctx.restore();
     }
 };
 
@@ -116,7 +108,7 @@ function gradienteTemp(ctx, chartArea) {
     return g;
 }
 
-function gradienteUmidade(ctx, chartArea) {
+function gradienteLiquido(ctx, chartArea) {
     if (!chartArea) return "rgba(0,191,255,0.3)";
     const g = ctx.createLinearGradient(0, chartArea.top, 0, chartArea.bottom);
     g.addColorStop(0,   "rgba(0,191,255,0.5)");
@@ -207,21 +199,21 @@ const grafico = new Chart(document.getElementById("grafico"), {
     })
 });
 
-// ── GRÁFICO UMIDADE ───────────────────────────────────────────────
-const graficoUmidade = new Chart(document.getElementById("grafico-umidade"), {
+// ── GRÁFICO LÍQUIDO ───────────────────────────────────────────────
+const graficoLiquido = new Chart(document.getElementById("grafico-liquido"), {
     type: "line",
-    plugins: [pluginFaixasUmidade],
+    plugins: [pluginFaixasLiquido],
     data: {
         labels: [],
         datasets: [{
-            label: "Umidade (%)",
+            label: "Líquido Detectado (%)",
             data: [],
             borderColor: "#00bfff",
             borderWidth: 2.5,
             backgroundColor: function(context) {
                 const { ctx, chartArea } = context.chart;
                 if (!chartArea) return "rgba(0,191,255,0.3)";
-                return gradienteUmidade(ctx, chartArea);
+                return gradienteLiquido(ctx, chartArea);
             },
             fill: true,
             tension: 0.4,
@@ -230,8 +222,7 @@ const graficoUmidade = new Chart(document.getElementById("grafico-umidade"), {
             pointBackgroundColor: function(context) {
                 const val = context.parsed?.y;
                 if (val === undefined) return "#00bfff";
-                if (val <= 75) return "#00ff55";
-                if (val <= 85) return "#ffd700";
+                if (val <= 30) return "#00ff55";
                 return "#ff0000";
             },
             pointBorderColor: "#111",
@@ -241,18 +232,15 @@ const graficoUmidade = new Chart(document.getElementById("grafico-umidade"), {
     options: opcoesGrafico("%", function(context) {
         const val = context.parsed.y;
         let status;
-        if (val <= 75)      status = "✅ IDEAL";
-        else if (val <= 85) status = "⚠️ ATENÇÃO";
-        else                status = "🔴 CRÍTICO";
+        if (val <= 30) status = "✅ ESTÁVEL";
+        else           status = "🔴 VAZAMENTO!";
         return ` ${val}% — ${status}`;
     })
 });
 
 // ── LÓGICA PRINCIPAL ──────────────────────────────────────────────
 async function carregarDados(){
-
     try{
-
         const resposta = await fetch("/dados");
         const dados = await resposta.json();
 
@@ -261,8 +249,7 @@ async function carregarDados(){
         const ultimo = dados[0];
 
         // ── TEMPERATURA ──────────────────────────────
-        document.getElementById("temp")
-            .innerText = ultimo.temperatura + "°C";
+        document.getElementById("temp").innerText = ultimo.temperatura + "°C";
 
         const temperatura = ultimo.temperatura;
         const cardTemp = document.getElementById("card-temp");
@@ -303,29 +290,28 @@ async function carregarDados(){
             }
         }
 
-        // ── UMIDADE ───────────────────────────────────
-        document.getElementById("umidade")
-            .innerText = ultimo.umidade + "%";
+        // ── LÍQUIDO DETECTADO ─────────────────────────
+        const liquido = ultimo.liquido;
+        const cardLiquido = document.getElementById("card-liquido");
+        const statusLiquido = document.getElementById("status-liquido");
+        let problemaLiquido = false;
 
-        const umidade = ultimo.umidade;
-        const cardUmidade = document.getElementById("card-umidade");
-        let problemaUmidade = false;
+        document.getElementById("liquido").innerText = liquido + "%";
 
-        if (umidade <= 75) {
-            cardUmidade.className = "card card-ideal";
-        } else if (umidade <= 85) {
-            cardUmidade.className = "card card-alerta";
-            problemaUmidade = true;
+        if (liquido <= 30) {
+            cardLiquido.className = "card card-ideal";
+            statusLiquido.innerText = "ESTÁVEL";
+            statusLiquido.style.color = "#00ff55";
         } else {
-            cardUmidade.className = "card card-critico";
-            problemaUmidade = true;
+            cardLiquido.className = "card card-critico";
+            statusLiquido.innerText = "VAZAMENTO!";
+            statusLiquido.style.color = "#ff4444";
+            problemaLiquido = true;
         }
 
         // ── VAZAMENTO ─────────────────────────────────
         const cardVazamento = document.getElementById("card-vazamento");
         const problemaVazamento = ultimo.vazamento === 1;
-
-        // Busca último vazamento detectado
         const ultimoVazamento = dados.find(d => d.vazamento === 1);
 
         if (problemaVazamento) {
@@ -346,12 +332,11 @@ async function carregarDados(){
 
         // ── HORÁRIO ───────────────────────────────────
         const agora = new Date();
-        document.getElementById("horario")
-            .innerText = agora.toLocaleTimeString("pt-BR");
+        document.getElementById("horario").innerText = agora.toLocaleTimeString("pt-BR");
         document.getElementById("card-horario").className = "card card-neutro";
 
         // ── STATUS GERAL ──────────────────────────────
-        const problemas = [problemaTemp, problemaUmidade, problemaVazamento]
+        const problemas = [problemaTemp, problemaLiquido, problemaVazamento]
             .filter(Boolean).length;
 
         const status = document.getElementById("status-temp");
@@ -380,21 +365,21 @@ async function carregarDados(){
         // ── GRÁFICOS ──────────────────────────────────
         const labels = [];
         const temperaturas = [];
-        const umidades = [];
+        const liquidos = [];
 
         [...dados].reverse().forEach(item => {
             labels.push(item.hora);
             temperaturas.push(item.temperatura);
-            umidades.push(item.umidade);
+            liquidos.push(item.liquido);
         });
 
         grafico.data.labels = labels;
         grafico.data.datasets[0].data = temperaturas;
         grafico.update("active");
 
-        graficoUmidade.data.labels = labels;
-        graficoUmidade.data.datasets[0].data = umidades;
-        graficoUmidade.update("active");
+        graficoLiquido.data.labels = labels;
+        graficoLiquido.data.datasets[0].data = liquidos;
+        graficoLiquido.update("active");
 
         // ── TELEGRAM ──────────────────────────────────
         const cardTelegram  = document.getElementById("card-telegram");
@@ -413,6 +398,12 @@ async function carregarDados(){
         }
 
     } catch(erro) {
+        console.log(erro);
+    }
+}
+
+carregarDados();
+setInterval(carregarDados, 5000);
         console.log(erro);
     }
 }
