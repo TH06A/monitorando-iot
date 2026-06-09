@@ -193,7 +193,7 @@ const grafico = new Chart(document.getElementById("grafico"), {
         let status;
         if (val <= 0)       status = "✅ IDEAL";
         else if (val <= 4)  status = "🔵 BOM";
-        else if (val <= 10) status = "⚠️ ATENÇÃO";
+        else if (val <= 35) status = "⚠️ ATENÇÃO";
         else                status = "🔴 CRÍTICO";
         return ` ${val}°C — ${status}`;
     })
