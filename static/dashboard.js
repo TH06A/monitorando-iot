@@ -18,6 +18,12 @@ function mostrarPagina(pagina) {
     }
 }
 
+// ── ESCALA DE TEMPERATURA ─────────────────────────────────────────
+// ≤ 10°C  → IDEAL
+// ≤ 18°C  → BOM
+// ≤ 25°C  → ATENÇÃO
+// > 25°C  → CRÍTICO
+
 // ── PLUGIN: Faixas temperatura ────────────────────────────────────
 const pluginFaixasTemp = {
     id: "faixasTemp",
@@ -28,10 +34,10 @@ const pluginFaixasTemp = {
         const { left, right } = chartArea;
 
         const faixas = [
-            { de: 10,  ate: 40,  cor: "rgba(255,0,0,0.12)" },
-            { de: 4,   ate: 10,  cor: "rgba(255,215,0,0.10)" },
-            { de: 0,   ate: 4,   cor: "rgba(0,191,255,0.10)" },
-            { de: -10, ate: 0,   cor: "rgba(0,255,85,0.08)" },
+            { de: 25,  ate: 50,  cor: "rgba(255,0,0,0.12)" },
+            { de: 18,  ate: 25,  cor: "rgba(255,140,0,0.10)" },
+            { de: 10,  ate: 18,  cor: "rgba(255,215,0,0.10)" },
+            { de: -10, ate: 10,  cor: "rgba(0,255,85,0.08)" },
         ];
 
         faixas.forEach(f => {
@@ -44,9 +50,9 @@ const pluginFaixasTemp = {
         });
 
         [
-            { valor: 10, cor: "rgba(255,0,0,0.5)" },
-            { valor: 4,  cor: "rgba(255,215,0,0.5)" },
-            { valor: 0,  cor: "rgba(0,255,85,0.5)" },
+            { valor: 25, cor: "rgba(255,0,0,0.5)" },
+            { valor: 18, cor: "rgba(255,140,0,0.5)" },
+            { valor: 10, cor: "rgba(255,215,0,0.5)" },
         ].forEach(l => {
             const y = yScale.getPixelForValue(l.valor);
             ctx.save();
@@ -179,9 +185,9 @@ const grafico = new Chart(document.getElementById("grafico"), {
             pointBackgroundColor: function(context) {
                 const val = context.parsed?.y;
                 if (val === undefined) return "#ff4444";
-                if (val <= 0)  return "#00ff55";
-                if (val <= 4)  return "#00bfff";
-                if (val <= 10) return "#ffd700";
+                if (val <= 10) return "#00ff55";
+                if (val <= 18) return "#ffd700";
+                if (val <= 25) return "#ff8c00";
                 return "#ff0000";
             },
             pointBorderColor: "#111",
@@ -191,9 +197,9 @@ const grafico = new Chart(document.getElementById("grafico"), {
     options: opcoesGrafico("°C", function(context) {
         const val = context.parsed.y;
         let status;
-        if (val <= 0)       status = "✅ IDEAL";
-        else if (val <= 4)  status = "🔵 BOM";
-        else if (val <= 12) status = "⚠️ ATENÇÃO";
+        if (val <= 10)      status = "✅ IDEAL";
+        else if (val <= 18) status = "🔵 BOM";
+        else if (val <= 25) status = "⚠️ ATENÇÃO";
         else                status = "🔴 CRÍTICO";
         return ` ${val}°C — ${status}`;
     })
@@ -255,12 +261,12 @@ async function carregarDados(){
         const cardTemp = document.getElementById("card-temp");
         let problemaTemp = false;
 
-        if (temperatura <= 0) {
+        if (temperatura <= 10) {
             cardTemp.className = "card card-ideal";
-        } else if (temperatura <= 4) {
+        } else if (temperatura <= 18) {
             cardTemp.className = "card card-bom";
             problemaTemp = true;
-        } else if (temperatura <= 10) {
+        } else if (temperatura <= 25) {
             cardTemp.className = "card card-alerta";
             problemaTemp = true;
         } else {
