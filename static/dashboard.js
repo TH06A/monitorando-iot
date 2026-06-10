@@ -464,7 +464,7 @@ async function carregarDados(){
         const cardTelegram  = document.getElementById("card-telegram");
         const iconeTelegram = document.getElementById("icone-telegram");
 
-        const resAlertas = await fetch("/alertas");
+        const resAlertas = await fetch(`/alertas?produto=${produtoAtual}`);
         const dadosAlertas = await resAlertas.json();
 
         if (dadosAlertas.problemas > 0) {
