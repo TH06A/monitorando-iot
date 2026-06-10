@@ -316,3 +316,37 @@ body{
         padding:35px;
     }
 }
+
+/* ── SELEÇÃO DE PRODUTO ───────────────── */
+
+.produto-btns {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin-top: 12px;
+}
+
+.btn-produto {
+    background: transparent;
+    border: 1px solid rgba(0,191,255,0.3);
+    border-radius: 8px;
+    color: #7ab8cc;
+    padding: 8px 12px;
+    cursor: pointer;
+    font-size: clamp(12px, 1.1vw, 14px);
+    transition: .3s;
+    text-align: left;
+}
+
+.btn-produto:hover {
+    background: rgba(0,191,255,0.15);
+    color: #00bfff;
+    border-color: #00bfff;
+}
+
+.btn-produto.ativo {
+    background: rgba(0,191,255,0.2);
+    color: #00bfff;
+    border-color: #00bfff;
+    font-weight: bold;
+}
