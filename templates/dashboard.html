@@ -19,7 +19,19 @@
         <li id="nav-historico" onclick="mostrarPagina('historico')">
             <i class="fa-solid fa-clock-rotate-left"></i> Histórico
         </li>
-        <div class="card status-card">
+
+        <!-- ── SELEÇÃO DE PRODUTO ── -->
+        <div class="card" style="margin-top:20px;">
+            <i class="fa-solid fa-box-open" style="color:#00bfff;font-size:1.5rem;"></i>
+            <h3>Produto</h3>
+            <div class="produto-btns">
+                <button id="btn-refrigerante" class="btn-produto ativo" onclick="selecionarProduto('refrigerante')">🥤 Refrigerante</button>
+                <button id="btn-acai"         class="btn-produto"       onclick="selecionarProduto('acai')">🍧 Açaí</button>
+                <button id="btn-pizza"        class="btn-produto"       onclick="selecionarProduto('pizza')">🍕 Pizza</button>
+            </div>
+        </div>
+
+        <div class="card status-card" style="margin-top:15px;">
             <i id="icone-alerta" class="fa-solid fa-triangle-exclamation"></i>
             <h3>Status</h3>
             <span id="status-temp">---</span>
@@ -47,7 +59,7 @@
 
             <div class="card" id="card-temp">
                 <i class="fa-solid fa-temperature-three-quarters"></i>
-                <h3>Temperatura</h3>
+                <h3 id="label-produto">🥤 Refrigerante</h3>
                 <span id="temp">--°C</span>
                 <small id="tendencia-temp" style="font-size:1.8rem; font-weight:bold;">→</small>
             </div>
