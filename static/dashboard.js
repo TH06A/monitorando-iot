@@ -447,7 +447,8 @@ async function carregarDados(){
         const liquidos = [];
 
         [...dados].reverse().forEach(item => {
-            labels.push(item.hora);
+            const d = new Date(item.hora.replace(" ", "T") + "Z");
+            labels.push(d.toLocaleTimeString("pt-BR"));
             temperaturas.push(item.temperatura);
             liquidos.push(item.liquido);
         });
