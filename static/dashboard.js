@@ -1,3 +1,114 @@
+// ── PRODUTOS E ESCALAS ────────────────────────────────────────────
+const PRODUTOS = {
+    refrigerante: {
+        nome: "Refrigerante",
+        icone: "🥤",
+        faixas: [
+            { de: 25,  ate: 50,  cor: "rgba(255,0,0,0.12)" },
+            { de: 18,  ate: 25,  cor: "rgba(255,140,0,0.10)" },
+            { de: 10,  ate: 18,  cor: "rgba(255,215,0,0.10)" },
+            { de: -10, ate: 10,  cor: "rgba(0,255,85,0.08)" },
+        ],
+        linhas: [25, 18, 10],
+        classCard: (t) => {
+            if (t <= 10) return { cls: "card card-ideal",   problema: false };
+            if (t <= 18) return { cls: "card card-bom",     problema: true  };
+            if (t <= 25) return { cls: "card card-alerta",  problema: true  };
+            return             { cls: "card card-critico",  problema: true  };
+        },
+        tooltip: (v) => {
+            if (v <= 10) return "✅ IDEAL";
+            if (v <= 18) return "🔵 BOM";
+            if (v <= 25) return "⚠️ ATENÇÃO";
+            return "🔴 CRÍTICO";
+        },
+        pontos: (v) => {
+            if (v <= 10) return "#00ff55";
+            if (v <= 18) return "#ffd700";
+            if (v <= 25) return "#ff8c00";
+            return "#ff0000";
+        }
+    },
+    acai: {
+        nome: "Açaí",
+        icone: "🍧",
+        faixas: [
+            { de: 20,  ate: 50,  cor: "rgba(255,0,0,0.12)" },
+            { de: 14,  ate: 20,  cor: "rgba(255,140,0,0.10)" },
+            { de: 5,   ate: 14,  cor: "rgba(255,215,0,0.10)" },
+            { de: -10, ate: 5,   cor: "rgba(0,255,85,0.08)" },
+        ],
+        linhas: [20, 14, 5],
+        classCard: (t) => {
+            if (t <= 5)  return { cls: "card card-ideal",   problema: false };
+            if (t <= 14) return { cls: "card card-bom",     problema: true  };
+            if (t <= 20) return { cls: "card card-alerta",  problema: true  };
+            return              { cls: "card card-critico",  problema: true  };
+        },
+        tooltip: (v) => {
+            if (v <= 5)  return "✅ IDEAL";
+            if (v <= 14) return "🔵 BOM";
+            if (v <= 20) return "⚠️ ATENÇÃO";
+            return "🔴 CRÍTICO";
+        },
+        pontos: (v) => {
+            if (v <= 5)  return "#00ff55";
+            if (v <= 14) return "#ffd700";
+            if (v <= 20) return "#ff8c00";
+            return "#ff0000";
+        }
+    },
+    pizza: {
+        nome: "Pizza",
+        icone: "🍕",
+        faixas: [
+            { de: -10, ate: 21,  cor: "rgba(255,0,0,0.12)" },
+            { de: 21,  ate: 25,  cor: "rgba(255,140,0,0.10)" },
+            { de: 25,  ate: 28,  cor: "rgba(255,215,0,0.10)" },
+            { de: 28,  ate: 60,  cor: "rgba(0,255,85,0.08)" },
+        ],
+        linhas: [21, 25, 28],
+        classCard: (t) => {
+            if (t >= 30) return { cls: "card card-ideal",   problema: false };
+            if (t >= 28) return { cls: "card card-bom",     problema: true  };
+            if (t >= 25) return { cls: "card card-alerta",  problema: true  };
+            return              { cls: "card card-critico",  problema: true  };
+        },
+        tooltip: (v) => {
+            if (v >= 30) return "✅ IDEAL";
+            if (v >= 28) return "🔵 BOM";
+            if (v >= 25) return "⚠️ ATENÇÃO";
+            return "🔴 CRÍTICO";
+        },
+        pontos: (v) => {
+            if (v >= 30) return "#00ff55";
+            if (v >= 28) return "#ffd700";
+            if (v >= 25) return "#ff8c00";
+            return "#ff0000";
+        }
+    }
+};
+
+let produtoAtual = "refrigerante";
+
+function selecionarProduto(key) {
+    produtoAtual = key;
+    const p = PRODUTOS[key];
+
+    // Atualiza botões
+    document.querySelectorAll(".btn-produto").forEach(b => b.classList.remove("ativo"));
+    document.getElementById("btn-" + key).classList.add("ativo");
+
+    // Atualiza título do card
+    document.getElementById("label-produto").innerText = p.icone + " " + p.nome;
+
+    // Atualiza faixas do gráfico
+    pluginFaixasTemp.faixasAtivas  = p.faixas;
+    pluginFaixasTemp.linhasAtivas  = p.linhas;
+
+    grafico.update("active");
+}
+
 // ── NAVEGAÇÃO ENTRE PÁGINAS ───────────────────────────────────────
 function mostrarPagina(pagina) {
     document.getElementById("pagina-dashboard").style.display = "none";
@@ -18,29 +129,18 @@ function mostrarPagina(pagina) {
     }
 }
 
-// ── ESCALA DE TEMPERATURA ─────────────────────────────────────────
-// ≤ 10°C  → IDEAL
-// ≤ 18°C  → BOM
-// ≤ 25°C  → ATENÇÃO
-// > 25°C  → CRÍTICO
-
 // ── PLUGIN: Faixas temperatura ────────────────────────────────────
 const pluginFaixasTemp = {
     id: "faixasTemp",
+    faixasAtivas: PRODUTOS.refrigerante.faixas,
+    linhasAtivas: PRODUTOS.refrigerante.linhas,
     beforeDraw(chart) {
         const { ctx, chartArea, scales } = chart;
         if (!chartArea) return;
         const yScale = scales.y;
         const { left, right } = chartArea;
 
-        const faixas = [
-            { de: 25,  ate: 50,  cor: "rgba(255,0,0,0.12)" },
-            { de: 18,  ate: 25,  cor: "rgba(255,140,0,0.10)" },
-            { de: 10,  ate: 18,  cor: "rgba(255,215,0,0.10)" },
-            { de: -10, ate: 10,  cor: "rgba(0,255,85,0.08)" },
-        ];
-
-        faixas.forEach(f => {
+        this.faixasAtivas.forEach(f => {
             const yTop    = yScale.getPixelForValue(f.ate);
             const yBottom = yScale.getPixelForValue(f.de);
             ctx.save();
@@ -49,14 +149,11 @@ const pluginFaixasTemp = {
             ctx.restore();
         });
 
-        [
-            { valor: 25, cor: "rgba(255,0,0,0.5)" },
-            { valor: 18, cor: "rgba(255,140,0,0.5)" },
-            { valor: 10, cor: "rgba(255,215,0,0.5)" },
-        ].forEach(l => {
-            const y = yScale.getPixelForValue(l.valor);
+        const cores = ["rgba(255,0,0,0.5)", "rgba(255,140,0,0.5)", "rgba(255,215,0,0.5)"];
+        this.linhasAtivas.forEach((valor, i) => {
+            const y = yScale.getPixelForValue(valor);
             ctx.save();
-            ctx.strokeStyle = l.cor;
+            ctx.strokeStyle = cores[i] || "rgba(255,255,255,0.3)";
             ctx.lineWidth = 1;
             ctx.setLineDash([6, 4]);
             ctx.beginPath();
@@ -77,12 +174,10 @@ const pluginFaixasLiquido = {
         const yScale = scales.y;
         const { left, right } = chartArea;
 
-        const faixas = [
-            { de: 30,  ate: 100, cor: "rgba(255,0,0,0.12)" },
-            { de: 0,   ate: 30,  cor: "rgba(0,255,85,0.08)" },
-        ];
-
-        faixas.forEach(f => {
+        [
+            { de: 30, ate: 100, cor: "rgba(255,0,0,0.12)" },
+            { de: 0,  ate: 30,  cor: "rgba(0,255,85,0.08)" },
+        ].forEach(f => {
             const yTop    = yScale.getPixelForValue(f.ate);
             const yBottom = yScale.getPixelForValue(f.de);
             ctx.save();
@@ -185,10 +280,7 @@ const grafico = new Chart(document.getElementById("grafico"), {
             pointBackgroundColor: function(context) {
                 const val = context.parsed?.y;
                 if (val === undefined) return "#ff4444";
-                if (val <= 10) return "#00ff55";
-                if (val <= 18) return "#ffd700";
-                if (val <= 25) return "#ff8c00";
-                return "#ff0000";
+                return PRODUTOS[produtoAtual].pontos(val);
             },
             pointBorderColor: "#111",
             pointBorderWidth: 2,
@@ -196,11 +288,7 @@ const grafico = new Chart(document.getElementById("grafico"), {
     },
     options: opcoesGrafico("°C", function(context) {
         const val = context.parsed.y;
-        let status;
-        if (val <= 10)      status = "✅ IDEAL";
-        else if (val <= 18) status = "🔵 BOM";
-        else if (val <= 25) status = "⚠️ ATENÇÃO";
-        else                status = "🔴 CRÍTICO";
+        const status = PRODUTOS[produtoAtual].tooltip(val);
         return ` ${val}°C — ${status}`;
     })
 });
@@ -237,10 +325,7 @@ const graficoLiquido = new Chart(document.getElementById("grafico-liquido"), {
     },
     options: opcoesGrafico("%", function(context) {
         const val = context.parsed.y;
-        let status;
-        if (val <= 30) status = "✅ ESTÁVEL";
-        else           status = "🔴 VAZAMENTO!";
-        return ` ${val}% — ${status}`;
+        return val <= 30 ? ` ${val}% — ✅ ESTÁVEL` : ` ${val}% — 🔴 VAZAMENTO!`;
     })
 });
 
@@ -253,26 +338,14 @@ async function carregarDados(){
         if(!dados.length) return;
 
         const ultimo = dados[0];
+        const p = PRODUTOS[produtoAtual];
 
         // ── TEMPERATURA ──────────────────────────────
-        document.getElementById("temp").innerText = ultimo.temperatura + "°C";
-
         const temperatura = ultimo.temperatura;
-        const cardTemp = document.getElementById("card-temp");
-        let problemaTemp = false;
+        document.getElementById("temp").innerText = temperatura + "°C";
 
-        if (temperatura <= 10) {
-            cardTemp.className = "card card-ideal";
-        } else if (temperatura <= 18) {
-            cardTemp.className = "card card-bom";
-            problemaTemp = true;
-        } else if (temperatura <= 25) {
-            cardTemp.className = "card card-alerta";
-            problemaTemp = true;
-        } else {
-            cardTemp.className = "card card-critico";
-            problemaTemp = true;
-        }
+        const { cls, problema: problemaTemp } = p.classCard(temperatura);
+        document.getElementById("card-temp").className = cls;
 
         // ── TENDÊNCIA DE TEMPERATURA ──────────────────
         if (dados.length >= 3) {
