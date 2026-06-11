@@ -223,6 +223,10 @@ body{
 
 #card-telegram {
     display: none;
+    position: fixed;
+    bottom: 28px;
+    right: 28px;
+    z-index: 999;
 }
 
 .telegram-compacto {
