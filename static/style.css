@@ -223,8 +223,29 @@ body{
 
 #card-telegram {
     display: none;
-    flex-direction: row;
+}
+
+.telegram-compacto {
+    display: flex;
     align-items: center;
+    gap: 10px;
+    background: rgba(255, 0, 0, 0.08);
+    border: 1px solid rgba(255, 0, 0, 0.4);
+    border-radius: 10px;
+    padding: 10px 14px;
+    animation: piscar .8s infinite;
+}
+
+.telegram-compacto i {
+    color: #ff4444;
+    font-size: 1.2rem;
+}
+
+.telegram-compacto span {
+    color: #ff4444;
+    font-size: 0.85rem;
+    font-weight: bold;
+    letter-spacing: 0.5px;
 }
 
 #card-telegram span{
