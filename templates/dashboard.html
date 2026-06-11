@@ -11,13 +11,13 @@
 <body>
 
 <div class="sidebar">
-    <div class="logo">MONITORA IOT</div>
+    <div class="logo">BAG INTELIGENTE</div>
     <ul>
         <li id="nav-dashboard" class="nav-ativo" onclick="mostrarPagina('dashboard')">
-            <i class="fa-solid fa-chart-line"></i> Dashboard
+            <i class="fa-solid fa-gauge-high"></i> Visão Geral
         </li>
         <li id="nav-historico" onclick="mostrarPagina('historico')">
-            <i class="fa-solid fa-clock-rotate-left"></i> Histórico
+            <i class="fa-solid fa-chart-area"></i> Gráficos
         </li>
 
         <!-- ── SELEÇÃO DE PRODUTO ── -->
@@ -31,17 +31,27 @@
             </div>
         </div>
 
+        <!-- ── STATUS ── -->
         <div class="card status-card" style="margin-top:15px;">
-            <i id="icone-alerta" class="fa-solid fa-triangle-exclamation"></i>
+            <i id="icone-alerta" class="fa-solid fa-satellite-dish"></i>
             <h3>Status</h3>
             <span id="status-temp">---</span>
         </div>
+
+        <!-- ── TELEGRAM COMPACTO ── -->
+        <div id="card-telegram" style="display:none; margin-top:12px;">
+            <div class="telegram-compacto">
+                <i class="fa-brands fa-telegram" id="icone-telegram"></i>
+                <span id="status-telegram">NOTIFICANDO</span>
+            </div>
+        </div>
+
     </ul>
 </div>
 
 <div class="content">
     <div class="header">
-        <h1 id="titulo-pagina">Monitoramento em Tempo Real</h1>
+        <h1 id="titulo-pagina">Visão Geral</h1>
         <div class="status">
             <span class="online"></span>
             ONLINE
@@ -80,19 +90,9 @@
             </div>
 
         </div>
-
-        <!-- ── CARD TELEGRAM ── -->
-        <div class="card" id="card-telegram" style="display:none; margin-top:20px; flex-direction:row; align-items:center; gap:15px; padding:20px 25px; text-align:left;">
-            <i class="fa-brands fa-telegram" id="icone-telegram" style="font-size:2rem;"></i>
-            <div>
-                <h3 style="margin:0;">Telegram</h3>
-                <span id="status-telegram" style="font-size:1rem;">NOTIFICANDO</span>
-            </div>
-        </div>
-
     </div>
 
-    <!-- ── PÁGINA HISTÓRICO ── -->
+    <!-- ── PÁGINA GRÁFICOS ── -->
     <div id="pagina-historico" style="display:none">
         <div class="graficos-grid">
             <div class="grafico-box">
