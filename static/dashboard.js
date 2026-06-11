@@ -119,11 +119,11 @@ function mostrarPagina(pagina) {
     if (pagina === "dashboard") {
         document.getElementById("pagina-dashboard").style.display = "block";
         document.getElementById("nav-dashboard").classList.add("nav-ativo");
-        document.getElementById("titulo-pagina").innerText = "Monitoramento em Tempo Real";
+        document.getElementById("titulo-pagina").innerText = "Visão Geral";
     } else {
         document.getElementById("pagina-historico").style.display = "block";
         document.getElementById("nav-historico").classList.add("nav-ativo");
-        document.getElementById("titulo-pagina").innerText = "Histórico";
+        document.getElementById("titulo-pagina").innerText = "Gráficos";
         grafico.update("active");
         graficoLiquido.update("active");
     }
@@ -484,6 +484,4 @@ async function carregarDados(){
 
 carregarDados();
 setInterval(carregarDados, 5000);
-
-
 
