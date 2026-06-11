@@ -221,6 +221,12 @@ body{
     box-shadow:0 0 20px rgba(0,100,180,.2);
 }
 
+#card-telegram {
+    display: none;
+    flex-direction: row;
+    align-items: center;
+}
+
 #card-telegram span{
     font-size: clamp(12px, 1.2vw, 18px);
     color: #ff4444;
