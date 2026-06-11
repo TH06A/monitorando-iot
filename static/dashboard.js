@@ -4,28 +4,28 @@ const PRODUTOS = {
         nome: "Refrigerante",
         icone: "🥤",
         faixas: [
-            { de: 25,  ate: 50,  cor: "rgba(255,0,0,0.12)" },
-            { de: 18,  ate: 25,  cor: "rgba(255,140,0,0.10)" },
-            { de: 10,  ate: 18,  cor: "rgba(255,215,0,0.10)" },
-            { de: -10, ate: 10,  cor: "rgba(0,255,85,0.08)" },
+            { de: 27,  ate: 50,  cor: "rgba(255,0,0,0.12)" },
+            { de: 24,  ate: 27,  cor: "rgba(255,140,0,0.10)" },
+            { de: 13,  ate: 24,  cor: "rgba(0,191,255,0.08)" },
+            { de: -10, ate: 13,  cor: "rgba(0,255,85,0.08)" },
         ],
-        linhas: [25, 18, 10],
+        linhas: [27, 24, 13],
         classCard: (t) => {
-            if (t <= 10) return { cls: "card card-ideal",   problema: false };
-            if (t <= 18) return { cls: "card card-bom",     problema: true  };
-            if (t <= 25) return { cls: "card card-alerta",  problema: true  };
-            return             { cls: "card card-critico",  problema: true  };
+            if (t <= 13) return { cls: "card card-ideal",  problema: false };
+            if (t <= 24) return { cls: "card card-bom",    problema: false };
+            if (t <= 27) return { cls: "card card-alerta", problema: true  };
+            return              { cls: "card card-critico", problema: true  };
         },
         tooltip: (v) => {
-            if (v <= 10) return "✅ IDEAL";
-            if (v <= 18) return "🔵 BOM";
-            if (v <= 25) return "⚠️ ATENÇÃO";
+            if (v <= 13) return "✅ IDEAL";
+            if (v <= 24) return "🔵 BOM";
+            if (v <= 27) return "⚠️ ATENÇÃO";
             return "🔴 CRÍTICO";
         },
         pontos: (v) => {
-            if (v <= 10) return "#00ff55";
-            if (v <= 18) return "#ffd700";
-            if (v <= 25) return "#ff8c00";
+            if (v <= 13) return "#00ff55";
+            if (v <= 24) return "#00bfff";
+            if (v <= 27) return "#ff8c00";
             return "#ff0000";
         }
     },
@@ -33,28 +33,28 @@ const PRODUTOS = {
         nome: "Açaí",
         icone: "🍧",
         faixas: [
-            { de: 20,  ate: 50,  cor: "rgba(255,0,0,0.12)" },
-            { de: 14,  ate: 20,  cor: "rgba(255,140,0,0.10)" },
-            { de: 5,   ate: 14,  cor: "rgba(255,215,0,0.10)" },
+            { de: 24,  ate: 50,  cor: "rgba(255,0,0,0.12)" },
+            { de: 20,  ate: 24,  cor: "rgba(255,140,0,0.10)" },
+            { de: 5,   ate: 20,  cor: "rgba(0,191,255,0.08)" },
             { de: -10, ate: 5,   cor: "rgba(0,255,85,0.08)" },
         ],
-        linhas: [20, 14, 5],
+        linhas: [24, 20, 5],
         classCard: (t) => {
-            if (t <= 5)  return { cls: "card card-ideal",   problema: false };
-            if (t <= 14) return { cls: "card card-bom",     problema: true  };
-            if (t <= 20) return { cls: "card card-alerta",  problema: true  };
-            return              { cls: "card card-critico",  problema: true  };
+            if (t <= 5)  return { cls: "card card-ideal",  problema: false };
+            if (t <= 20) return { cls: "card card-bom",    problema: false };
+            if (t <= 24) return { cls: "card card-alerta", problema: true  };
+            return              { cls: "card card-critico", problema: true  };
         },
         tooltip: (v) => {
             if (v <= 5)  return "✅ IDEAL";
-            if (v <= 14) return "🔵 BOM";
-            if (v <= 20) return "⚠️ ATENÇÃO";
+            if (v <= 20) return "🔵 BOM";
+            if (v <= 24) return "⚠️ ATENÇÃO";
             return "🔴 CRÍTICO";
         },
         pontos: (v) => {
             if (v <= 5)  return "#00ff55";
-            if (v <= 14) return "#ffd700";
-            if (v <= 20) return "#ff8c00";
+            if (v <= 20) return "#00bfff";
+            if (v <= 24) return "#ff8c00";
             return "#ff0000";
         }
     },
@@ -62,17 +62,17 @@ const PRODUTOS = {
         nome: "Pizza",
         icone: "🍕",
         faixas: [
-            { de: -10, ate: 21,  cor: "rgba(255,0,0,0.12)" },
-            { de: 21,  ate: 25,  cor: "rgba(255,140,0,0.10)" },
-            { de: 25,  ate: 28,  cor: "rgba(255,215,0,0.10)" },
-            { de: 28,  ate: 60,  cor: "rgba(0,255,85,0.08)" },
+            { de: -10, ate: 25,  cor: "rgba(255,0,0,0.12)" },
+            { de: 25,  ate: 28,  cor: "rgba(255,140,0,0.10)" },
+            { de: 28,  ate: 30,  cor: "rgba(0,191,255,0.08)" },
+            { de: 30,  ate: 60,  cor: "rgba(0,255,85,0.08)" },
         ],
-        linhas: [21, 25, 28],
+        linhas: [25, 28, 30],
         classCard: (t) => {
-            if (t >= 30) return { cls: "card card-ideal",   problema: false };
-            if (t >= 28) return { cls: "card card-bom",     problema: true  };
-            if (t >= 25) return { cls: "card card-alerta",  problema: true  };
-            return              { cls: "card card-critico",  problema: true  };
+            if (t >= 30) return { cls: "card card-ideal",  problema: false };
+            if (t >= 28) return { cls: "card card-bom",    problema: false };
+            if (t >= 25) return { cls: "card card-alerta", problema: true  };
+            return              { cls: "card card-critico", problema: true  };
         },
         tooltip: (v) => {
             if (v >= 30) return "✅ IDEAL";
@@ -82,7 +82,7 @@ const PRODUTOS = {
         },
         pontos: (v) => {
             if (v >= 30) return "#00ff55";
-            if (v >= 28) return "#ffd700";
+            if (v >= 28) return "#00bfff";
             if (v >= 25) return "#ff8c00";
             return "#ff0000";
         }
