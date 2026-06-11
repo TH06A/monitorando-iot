@@ -11,7 +11,7 @@
 <body>
 
 <div class="sidebar">
-    <div class="logo">BAG INTELIGENTE</div>
+    <div class="logo">MONITORA IOT</div>
     <ul>
         <li id="nav-dashboard" class="nav-ativo" onclick="mostrarPagina('dashboard')">
             <i class="fa-solid fa-gauge-high"></i> Visão Geral
@@ -25,9 +25,10 @@
             <i class="fa-solid fa-box-open" style="color:#00bfff;font-size:1.5rem;"></i>
             <h3>Produto</h3>
             <div class="produto-btns">
-                <button id="btn-refrigerante" class="btn-produto ativo" onclick="selecionarProduto('refrigerante')">🥤 Refrigerante</button>
-                <button id="btn-acai"         class="btn-produto"       onclick="selecionarProduto('acai')">🍧 Açaí</button>
-                <button id="btn-pizza"        class="btn-produto"       onclick="selecionarProduto('pizza')">🍕 Pizza</button>
+                <button id="btn-livre"        class="btn-produto ativo"  onclick="selecionarProduto('livre')">⬜ Livre</button>
+                <button id="btn-refrigerante" class="btn-produto"        onclick="selecionarProduto('refrigerante')">🥤 Refrigerante</button>
+                <button id="btn-acai"         class="btn-produto"        onclick="selecionarProduto('acai')">🍧 Açaí</button>
+                <button id="btn-pizza"        class="btn-produto"        onclick="selecionarProduto('pizza')">🍕 Pizza</button>
             </div>
         </div>
 
@@ -64,7 +65,7 @@
 
             <div class="card" id="card-temp">
                 <i class="fa-solid fa-temperature-three-quarters"></i>
-                <h3 id="label-produto">🥤 Refrigerante</h3>
+                <h3 id="label-produto">⬜ Livre</h3>
                 <span id="temp">--°C</span>
                 <small id="tendencia-temp" style="font-size:1.8rem; font-weight:bold;">→</small>
             </div>
