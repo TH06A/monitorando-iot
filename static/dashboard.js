@@ -1,5 +1,16 @@
 // ── PRODUTOS E ESCALAS ────────────────────────────────────────────
 const PRODUTOS = {
+    livre: {
+        nome: "Livre",
+        icone: "⬜",
+        faixas: [
+            { de: -10, ate: 60, cor: "rgba(0,191,255,0.05)" },
+        ],
+        linhas: [],
+        classCard: (t) => ({ cls: "card card-bom", problema: false }),
+        tooltip: (v) => "🔵 LIVRE",
+        pontos: (v) => "#00bfff"
+    },
     refrigerante: {
         nome: "Refrigerante",
         icone: "🥤",
@@ -89,7 +100,7 @@ const PRODUTOS = {
     }
 };
 
-let produtoAtual = "refrigerante";
+let produtoAtual = "livre";
 
 function selecionarProduto(key) {
     produtoAtual = key;
