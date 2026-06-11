@@ -54,6 +54,12 @@ init_db()
 
 # ── ESCALAS POR PRODUTO ───────────────────────────────────────────
 ESCALAS = {
+    "livre": {
+        "nome":  "Livre",
+        "icone": "⬜",
+        # Modo livre: sem restrição de temperatura, só notifica vazamento
+        "check": lambda t: None
+    },
     "refrigerante": {
         "nome":  "Refrigerante",
         "icone": "🥤",
