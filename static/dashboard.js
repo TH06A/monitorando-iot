@@ -403,8 +403,8 @@ async function carregarDados(){
 
         const ultimoEvento = document.getElementById("ultimo-vazamento");
         if (ultimoVazamento) {
-            const hora = ultimoVazamento.hora.match(/(\d{2}:\d{2})/);
-            ultimoEvento.innerText = "Último: " + (hora ? hora[1] : "--:--");
+            const d = new Date(ultimoVazamento.hora.replace(" ", "T") + "Z");
+            ultimoEvento.innerText = "Último: " + d.toLocaleTimeString("pt-BR", { hour: "2-digit", minute: "2-digit" });
         } else {
             ultimoEvento.innerText = "Sem registros";
         }
@@ -484,7 +484,6 @@ async function carregarDados(){
 
 carregarDados();
 setInterval(carregarDados, 5000);
-        
 
 
 
